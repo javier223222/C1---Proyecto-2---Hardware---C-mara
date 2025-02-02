@@ -3,6 +3,13 @@ package com.example.myapplication.data.repository
 import com.example.myapplication.data.network.ApiClient
 import com.example.myapplication.data.network.ProductDbService
 import com.example.myapplication.data.model.Product
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
+
 
 
 class ProductRepository {
@@ -22,9 +29,13 @@ class ProductRepository {
 
 
 
-    suspend fun createProduct(name:String,description:String,image:String,price:Int): Product {
-        return api.createProduct(Product(0,name,description,price,image,"",""))
-
+    suspend fun createProduct(name:String,description:String,price:Int,imageFile:File): Product {
+      val nameBody=name.toRequestBody("text/plain".toMediaTypeOrNull())
+        val descriptionBody=description.toRequestBody("text/plain".toMediaTypeOrNull())
+       val priceBody=price.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val requestBody=imageFile.asRequestBody("image/*".toMediaTypeOrNull())
+        val multiPartImage=MultipartBody.Part.createFormData("image",imageFile.name,requestBody)
+        return  api.createProduct(nameBody,descriptionBody,priceBody,multiPartImage)
 
     }
 

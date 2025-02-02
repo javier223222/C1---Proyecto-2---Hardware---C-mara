@@ -65,6 +65,12 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation("androidx.activity:activity-compose:1.7.2") // Para ActivityResult API
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1") // Para ViewModel
+    implementation("androidx.compose.ui:ui:1.5.0") // Compose
+    implementation("com.github.bumptech.glide:glide:4.15.1") // Para mostrar imágenes (opcional)
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
 
 }

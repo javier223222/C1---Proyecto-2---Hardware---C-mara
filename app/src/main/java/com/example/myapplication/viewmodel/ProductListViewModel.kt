@@ -8,6 +8,7 @@ import com.example.myapplication.data.repository.ProductRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 
 class ProductListViewModel : ViewModel() {
     private val repository = ProductRepository()
@@ -35,9 +36,9 @@ class ProductListViewModel : ViewModel() {
                 _products.value = updatedList
                 repository.deleteProduct(productId)
 
+              getProducts()
 
 
-                getProducts()
             } catch (e: Exception) {
                 println("Error al eliminar producto: ${e.message}")
             }
@@ -48,10 +49,15 @@ class ProductListViewModel : ViewModel() {
     fun updateProduct(productId: Int, newName: String) {
         viewModelScope.launch {
             try {
+                val updatedList = _products.value.map {
+                    if (it.id == productId) it.copy(name = newName) else it
+                }.toList()
+                _products.value=updatedList
 
 
                 repository.updateProduct(productId, Product(productId,newName,"",0,"","",""))
-                getProducts() // Recargar lista después de actualizar
+                getProducts()
+               // Recargar lista después de actualizar
 
             } catch (e: Exception) {
                 println("Error al actualizar producto: ${e.message}")
@@ -60,12 +66,16 @@ class ProductListViewModel : ViewModel() {
     }
 
 
-    fun addProduct(name:String,description:String,image:String,price:Int) {
+    fun addProduct(name:String,description:String,price:Int,imageFile:File) {
         viewModelScope.launch {
             try {
 
-               val newProduct= repository.createProduct(name,description,image,price)
-                getProducts() // Recargar lista después de agregar
+
+               val newProduct= repository.createProduct(name,description,price,imageFile)
+                val pr=_products.value+newProduct
+                _products.value=pr
+                getProducts()
+
             } catch (e: Exception) {
                 println("Error al agregar producto: ${e.message}")
             }

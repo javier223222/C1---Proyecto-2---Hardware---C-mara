@@ -1,12 +1,17 @@
 package com.example.myapplication.ui.screens
 
+import AddProductDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -15,7 +20,6 @@ import com.example.myapplication.viewmodel.ProductListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-
 fun ProductListScreen(viewModel: ProductListViewModel = viewModel()) {
     val products by viewModel.products.collectAsState()
     val context = LocalContext.current
@@ -28,36 +32,57 @@ fun ProductListScreen(viewModel: ProductListViewModel = viewModel()) {
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Lista de Mangas") }) },
+        topBar = {
+            TopAppBar(
+                title = { Text("Lista de Mangas", style = MaterialTheme.typography.titleLarge) },
+                actions = {
+                    IconButton(onClick = { viewModel.getProducts() }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Actualizar lista")
+                    }
+                }
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showAddDialog = true }, // ⚠️ Mostrar modal para agregar producto
-
+                onClick = { showAddDialog = true },
+                containerColor = Color(169, 196, 108),
+                contentColor = Color.White
             ) {
-
+                Icon(Icons.Default.Add, contentDescription = "Agregar producto")
             }
         }
     ) { padding ->
-        LazyColumn(
-            contentPadding = padding,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(products) { product ->
-                ProductItem(
-                    product = product,
-                    onEditProduct = {
-                        selectedProduct = it
-                        showEditDialog = true
-                    },
-                    onDeletePrduct = { productId ->
-                        viewModel.deleteProduct(productId) // ⚠️ Borrar producto y actualizar lista
-                    }
-                )
+        if (products.isEmpty()) {
+            // 📌 Mensaje cuando no hay productos
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("No hay productos disponibles", style = MaterialTheme.typography.bodyLarge)
+            }
+        } else {
+            LazyColumn(
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxSize().padding(padding)
+            ) {
+                items(products) { product ->
+                    ProductItem(
+                        product = product,
+                        onEditProduct = {
+                            selectedProduct = it
+                            showEditDialog = true
+                        },
+                        onDeleteProduct = { productId ->
+                            viewModel.deleteProduct(productId) // ⚠️ Borrar producto y actualizar lista
+                        }
+                    )
+                }
             }
         }
     }
 
+    // 📌 Dialogo para editar producto
     if (showEditDialog && selectedProduct != null) {
         EditProductDialog(
             product = selectedProduct!!,
@@ -70,13 +95,15 @@ fun ProductListScreen(viewModel: ProductListViewModel = viewModel()) {
         )
     }
 
+    // 📌 Dialogo para agregar producto
     if (showAddDialog) {
         AddProductDialog(
             onDismiss = { showAddDialog = false },
             onAddProduct = { name, description, price, imageUrl ->
-                viewModel.addProduct(name,description,imageUrl,price)
+                viewModel.addProduct(name, description, price, imageUrl)
             }
         )
     }
 }
+
 
