@@ -1,6 +1,6 @@
 package com.example.myapplication.ui.screens
 
-import AddProductDialog
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,7 +28,7 @@ fun ProductListScreen(viewModel: ProductListViewModel = viewModel()) {
     var selectedProduct by remember { mutableStateOf<Product?>(null) }
 
     LaunchedEffect(Unit) {
-        viewModel.getProducts() // ⚠️ Cargar productos al inicio
+        viewModel.getProducts()
     }
 
     Scaffold(
@@ -53,7 +53,7 @@ fun ProductListScreen(viewModel: ProductListViewModel = viewModel()) {
         }
     ) { padding ->
         if (products.isEmpty()) {
-            // 📌 Mensaje cuando no hay productos
+
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -82,7 +82,6 @@ fun ProductListScreen(viewModel: ProductListViewModel = viewModel()) {
         }
     }
 
-    // 📌 Dialogo para editar producto
     if (showEditDialog && selectedProduct != null) {
         EditProductDialog(
             product = selectedProduct!!,
@@ -95,7 +94,7 @@ fun ProductListScreen(viewModel: ProductListViewModel = viewModel()) {
         )
     }
 
-    // 📌 Dialogo para agregar producto
+
     if (showAddDialog) {
         AddProductDialog(
             onDismiss = { showAddDialog = false },

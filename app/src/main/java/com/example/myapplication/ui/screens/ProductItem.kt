@@ -35,6 +35,8 @@ fun ProductItem(
             // 📌 Imagen del producto (ocupa todo el ancho)
             AsyncImage(
                 model = product.image,
+
+
                 contentDescription = "Imagen de ${product.image}",
                 contentScale = ContentScale.Crop,  // 📌 La imagen llena todo el espacio disponible
                 modifier = Modifier

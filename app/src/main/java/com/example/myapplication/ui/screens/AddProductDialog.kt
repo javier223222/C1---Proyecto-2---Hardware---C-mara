@@ -1,3 +1,5 @@
+package com.example.myapplication.ui.screens
+
 import android.Manifest
 import android.content.Context
 import android.net.Uri
@@ -30,6 +32,8 @@ import androidx.core.content.FileProvider
 import coil.compose.rememberAsyncImagePainter
 import com.example.myapplication.R
 import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -47,7 +51,7 @@ fun AddProductDialog(
 
     val context = LocalContext.current
 
-    // Permisos para cámara y almacenamiento
+
     val permissionsToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_MEDIA_IMAGES)
     } else {
@@ -69,9 +73,11 @@ fun AddProductDialog(
         }
     }
 
+
     LaunchedEffect(Unit) {
         permissionLauncher.launch(permissionsToRequest)
     }
+
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
@@ -105,6 +111,7 @@ fun AddProductDialog(
                     color = Color(0xFF333333)
                 )
 
+
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -115,6 +122,7 @@ fun AddProductDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
 
+
                 OutlinedTextField(
                     value = descripcion,
                     onValueChange = { descripcion = it },
@@ -124,6 +132,7 @@ fun AddProductDialog(
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth()
                 )
+
 
                 OutlinedTextField(
                     value = precio,
@@ -147,22 +156,23 @@ fun AddProductDialog(
                         .height(180.dp)
                         .background(Color(0xFFE0E0E0), shape = RoundedCornerShape(12.dp))
                         .clickable {
+                            // Crear un archivo temporal para la foto
                             val newFile = createImageFile(context)
-                            val uri = FileProvider.getUriForFile(
+                            val contentUri = FileProvider.getUriForFile(
                                 context,
                                 "com.example.myapplication.fileprovider",
                                 newFile
                             )
-
-                            imageFile = newFile
-                            imageUri = uri
-                            cameraLauncher.launch(uri)
+                            imageUri = contentUri
+                            // Inicia la cámara
+                            cameraLauncher.launch(contentUri)
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    if (imageUri != null) {
+                    if (imageFile != null) {
+                        // Mostrar la foto capturada
                         Image(
-                            painter = rememberAsyncImagePainter(model = imageUri),
+                            painter = rememberAsyncImagePainter(imageFile),
                             contentDescription = "Imagen seleccionada",
                             modifier = Modifier.fillMaxSize()
                         )
@@ -185,7 +195,7 @@ fun AddProductDialog(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // 📌 Botón para agregar producto
+                // Botón para agregar producto
                 Button(
                     onClick = {
                         val priceValue = precio.toIntOrNull()
@@ -213,7 +223,7 @@ fun AddProductDialog(
     }
 }
 
-// 🔹 Función para crear un archivo de imagen en almacenamiento accesible
+
 fun createImageFile(context: Context): File {
     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
     val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -224,3 +234,16 @@ fun createImageFile(context: Context): File {
 
     return File(storageDir, "IMG_${timeStamp}.jpg")
 }
+
+
+fun getFileFromContentUri(context: Context, contentUri: Uri): File {
+
+    val file = File(context.cacheDir, "temp_image_${System.currentTimeMillis()}.jpg")
+    context.contentResolver.openInputStream(contentUri)?.use { input ->
+        FileOutputStream(file).use { output ->
+            input.copyTo(output)
+        }
+    }
+    return file
+}
+
