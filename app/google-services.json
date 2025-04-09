@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "873771070719",
+    "project_id": "provetcuinventario",
+    "storage_bucket": "provetcuinventario.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:873771070719:android:296214f5b6fc09371608ca",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDk7RUlR6wAVLpdTNpMbFQkOzWZtr9lFyc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:873771070719:android:b276f4d20f23049d1608ca",
+        "android_client_info": {
+          "package_name": "com.example.provetcuinvetario"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDk7RUlR6wAVLpdTNpMbFQkOzWZtr9lFyc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

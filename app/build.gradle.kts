@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -51,26 +53,35 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.navigation:navigation-compose:2.7.3")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0")) // Usa la última versión disponible
+    implementation("com.google.firebase:firebase-messaging-ktx")
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
     implementation (libs.retrofit)
     implementation (libs.gson.converter)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
+
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("androidx.activity:activity-compose:1.7.2") // Para ActivityResult API
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1") // Para ViewModel
-    implementation("androidx.compose.ui:ui:1.5.0") // Compose
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.7.8") // Compose
     implementation("com.github.bumptech.glide:glide:4.15.1") // Para mostrar imágenes (opcional)
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.5.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+
 
 
 }

@@ -33,6 +33,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.myapplication.R
 import java.io.File
 import java.io.FileOutputStream
+import com.example.myapplication.data.repository.encryptData
+import com.example.myapplication.data.repository.showNotification
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -84,7 +86,7 @@ fun AddProductDialog(
     ) { success ->
         if (success) {
             imageUri?.let {
-                imageFile = File(it.path ?: "")
+                imageFile = getFileFromContentUri(context, it)
             }
         } else {
             Toast.makeText(context, "Error al capturar la imagen", Toast.LENGTH_SHORT).show()
@@ -184,6 +186,7 @@ fun AddProductDialog(
                                 tint = Color.Gray,
                                 modifier = Modifier.size(80.dp)
                             )
+
                             Text(
                                 text = "Toca para agregar imagen",
                                 fontSize = 14.sp,
@@ -200,7 +203,12 @@ fun AddProductDialog(
                     onClick = {
                         val priceValue = precio.toIntOrNull()
                         if (name.isNotEmpty() && descripcion.isNotEmpty() && priceValue != null && imageFile != null) {
-                            onAddProduct(name, descripcion, priceValue, imageFile!!)
+                            val encryptedName = encryptData(name)
+                            val encryptedDescription = encryptData(descripcion)
+                            val encryptedPrice = encryptData(precio)
+
+                            onAddProduct(encryptedName, encryptedDescription,priceValue, imageFile!!)
+                            showNotification(context,name)
                             onDismiss()
                         } else {
                             isError = true
@@ -216,6 +224,7 @@ fun AddProductDialog(
                         contentColor = Color.White
                     )
                 ) {
+
                     Text("Agregar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }
